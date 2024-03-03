@@ -16,7 +16,7 @@ const AddProduct = () => {
     const [errorProductQuantity, setErrorProductQuantity] = useState("");
     const [errorProductRate, setErrorProductRate] = useState("");
 
-
+//ccjscdlbc
     const productOwnerId = localStorage.getItem("productOwnerId");
 
     const [products, setProducts] = useState(
