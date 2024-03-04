@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use("/",require("./routes/userRoutes"));
-app.use("/api/invoices",require("./routes/productRoutes"));
+app.use("/api/invoices",require("./routes/invoiceRoutes"));
 
 //Error Handling Middleware
 app.use(errorHandler);

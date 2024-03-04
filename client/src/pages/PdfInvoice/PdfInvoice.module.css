@@ -1,0 +1,121 @@
+html {
+    -webkit-print-color-adjust: exact;
+}
+
+body,
+html {
+    min-height: 100vh;
+    margin: 0 2rem;
+}
+
+.invoiceContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 85vh;
+    font-size: 1.5rem;
+}
+
+.invoiceHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.invoiceMain {
+    flex-grow: 1;
+}
+
+.invoiceTable {
+    border-collapse: collapse;
+    text-align: left;
+}
+
+tbody {
+    margin-top: 20px;
+}
+
+
+.invoiceSummary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 20px;
+}
+
+.invoiceSummary div {
+    display: flex;
+    align-items: flex-end;
+    gap: 2rem;
+    width: 20rem;
+    justify-content: flex-end;
+}
+
+.grandline {
+    width: 16rem;
+    background: gray;
+    height: 1px;
+}
+
+.gst {
+    color: gray;
+}
+
+.invoiceFooter {
+    margin-top: auto;
+    position: relative;
+}
+
+.validity {
+    /* position: absolute;
+    left: 0;
+    bottom: 14rem; */
+}
+
+.logoImage {
+    width: 200px;
+    height: 72px;
+}
+.tableHeader{
+    padding: 0.7rem;
+}
+.tnc {
+    background: black;
+    color: lightgray;
+    height: 6rem;
+    width: 46rem;
+    padding: 0.7rem 0 0 2rem;
+    position: relative;
+    top: 3rem;
+    left: 14rem;
+    border-radius: 4.5rem 4.5rem;
+    font-size: 0.9rem;
+}
+
+.line {
+    width: 250%;
+    background: gray;
+    height: 0.1px;
+}
+
+.tableData {
+    /* border: 3px solid red; */
+    font-size: 1.2rem;
+    /* max-width: 200px; */
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
+    /* white-space: nowrap; */
+    /* word-wrap: break-word; */
+    /* margin: 10px; */
+    padding: 10px;
+}
+
+.rateCol {
+    min-width: 100px;
+}

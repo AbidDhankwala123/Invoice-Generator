@@ -3,15 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
-import { saveAs } from 'file-saver';
 
-const InvoiceHistory = () => {
+const InvoiceHistory = ({invoiceData,setInvoiceData,handleDownload}) => {
     let navigate = useNavigate();
     // if (!invoiceData || invoiceData.length === 0) {
     //     return <div>No invoice data available</div>;
     // }
     const ownerId = localStorage.getItem("ownerId");
-    const [invoiceData, setInvoiceData] = useState("");
 
     
 
@@ -43,35 +41,13 @@ const InvoiceHistory = () => {
                 console.error(error);
             })
     }, [])
-    const handleDownload = (invoice) => {
-        axios.post(`${import.meta.env.VITE_APP_BACKEND_URL_FOR_PRODUCTS}/create-pdf`, {invoice},
-            {
-                headers:
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("jwtToken")
-                }
-            }
-        )
-            .then(() => axios.get(`${import.meta.env.VITE_APP_BACKEND_URL_FOR_PRODUCTS}/fetch-pdf`, {
-                headers:
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("jwtToken")
-                }
-            },
-                { responseType: 'blob' }))
-            .then((res) => {
-                console.log("res= ",res);
-                const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
-                saveAs(pdfBlob, 'invoice.pdf')
-
-            })
-
+    if (!invoiceData) {
+        // If quizData is still loading, you can return a loading indicator or null
+        return <p>Loading.....</p>;
     }
     return (
-        <div>
-            <table className='border-collapse w-1/2'>
+        <div >
+            {invoiceData && invoiceData.length>0 && <><table className='border-collapse w-1/2'>
                 <caption className='font-bold text-2xl'>Product Invoices</caption>
                 <thead>
                     <tr>
@@ -82,7 +58,7 @@ const InvoiceHistory = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {invoiceData && invoiceData.map((invoice, index) => {
+                    {invoiceData && invoiceData.length > 0 && invoiceData.map((invoice, index) => {
                         const createdAtDate = new Date(invoice.createdAt);
                         const formattedDate = `${String(createdAtDate.getDate()).padStart(2, '0')} ${createdAtDate.toLocaleString('default', { month: 'short' })}, ${String(createdAtDate.getFullYear())}`;
                         return (
@@ -95,10 +71,9 @@ const InvoiceHistory = () => {
                         );
                     })}
                 </tbody>
-            </table>
-            <div className='mt-4'>
-                <button className='bg-green-800 text-white rounded-lg h-7 w-24 cursor-pointer' onClick={() => navigate("/addProduct")}>Back</button>
-            </div>
+            </table><div className='mt-4'>
+                    <button className='bg-green-800 text-white rounded-lg h-7 w-24 cursor-pointer' onClick={() => navigate("/addProduct")}>Back</button>
+                </div></>}
             <ToastContainer />
         </div>
     )

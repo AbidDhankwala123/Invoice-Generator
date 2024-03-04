@@ -6,15 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 
-const AddProduct = () => {
+const AddProduct = ({setInvoiceData}) => {
     let navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [totalAmount, setTotalAmount] = useState(0);
     const [grandTotal, setGrandTotal] = useState(0);
-
-    const [errorname, setErrorName] = useState("");
-    const [errorquantity, setErrorQuantity] = useState("");
-    const [errorrate, setErrorRate] = useState("");
 
     const ownerId = localStorage.getItem("ownerId");
 
@@ -84,29 +80,35 @@ const AddProduct = () => {
 
     const validateName = () => {
         if (products.some(product => !product.name || product.name.trim().length === 0)) {
-            setErrorName("Product Name is required");
+            toast.error("Product Name is required", {
+                position: "top-center",
+                autoClose: 2000
+              })
             return true;
         }
-        setErrorName("");
         return false;
     }
     const validateQuantity = () => {
         let regex = /^[0-9]+$/;
         if (products.some(product => !product.quantity || !regex.test(product.quantity))) {
-            setErrorQuantity("Product Quantity must be in numbers");
+            toast.error("Product Quantity must be numberic", {
+                position: "top-center",
+                autoClose: 2000
+              })
             return true;
         }
-        setErrorQuantity("");
         return false;
 
     }
     const validateRate = () => {
         let regex = /^[0-9]+$/;
         if (products.some(product => !product.rate || !regex.test(product.rate))) {
-            setErrorrate("Product Rate must be in numbers");
+            toast.error("Product Rate must be numberic", {
+                position: "top-center",
+                autoClose: 2000
+              })
             return true;
         }
-        setErrorRate("");
         return false;
 
     }
@@ -126,6 +128,8 @@ const AddProduct = () => {
             .then(response => {
                 // listProducts();
                 console.log(response);
+                navigate("/pdfInvoice");
+                setInvoiceData(response.data.newInvoice);
                 setLoading(false);
             })
             .catch(error => {
@@ -170,11 +174,8 @@ const AddProduct = () => {
                             </div><br />
                             <div className='flex gap-4'>
                                 <input type="text" onChange={(e) => handleName(e, index)} value={products[index].name} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="name" placeholder='Product Name' />
-                                <p className='text-red-600'>{errorname}</p>
                                 <input type="text" onChange={(e) => handleQuantity(e, index)} value={products[index].quantity !== null ? products[index].quantity : ""} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="quantity" placeholder='Product Quantity' />
-                                <p className='text-red-600'>{errorquantity}</p>
                                 <input type="text" onChange={(e) => handleRate(e, index)} value={products[index].rate !== null ? products[index].rate : ""} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="rate" placeholder='Product Rate' />
-                                <p className='text-red-600'>{errorrate}</p>
                                 <span className='text-lg'>Total - {products[index].total}</span>
                             </div>
                         </div>

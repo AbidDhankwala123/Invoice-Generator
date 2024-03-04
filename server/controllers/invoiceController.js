@@ -1,6 +1,5 @@
-const Invoice = require("../models/product");
+const Invoice = require("../models/invoice");
 const puppeteer = require("puppeteer");
-// const pdfTemplate = require('../documents/index');
 const pdf = require('html-pdf');
 const path = require('path');
 
@@ -10,7 +9,7 @@ const getAllInvoicesByUserId = async (req, res, next) => {
         const { ownerId } = req.params;
 
         //Get All Products
-        const invoices = await Invoice.find({ ownerId }).sort({ createdAt: 1 });
+        const invoices = await Invoice.find({ ownerId }).sort({ createdAt: -1 });
 
         res.status(200).json({
             status: "SUCCESS",
@@ -29,15 +28,6 @@ const createInvoice = async (req, res, next) => {
         const { ownerId, products, totalAmount, grandTotal } = req.body;
 
         const newInvoice = await Invoice.create({ ownerId, products, totalAmount, grandTotal });
-
-        // const browser = await puppeteer.launch();
-        // const page = await browser.newPage();
-
-        // // Read the styles from an external CSS file
-
-        // // Dynamic content
-        // const invoiceTitle = "INVOICE GENERATOR";
-        // const logoSrc = "https://levitation.in/wp-content/uploads/2023/04/levitation-Infotech.png";
 
         res.status(200).json({
             message: "Invoice created successfully",
@@ -66,113 +56,118 @@ const createPDf = (req, res, next) => {
 <html>
   <head>
      <style>
-html {
--webkit-print-color-adjust: exact;
-}
-    body,
-html {
-min-height: 100vh;
-margin : 2rem;
-}
+     html {
+      -webkit-print-color-adjust: exact;
+  }
 
-.invoiceContainer {
-display: flex;
-flex-direction: column;
-width : 100%;
-min-height: 85vh;
-font-size : 1.5rem;
-}
+  .invoiceContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 85vh;
+      font-size: 1.5rem;
+  }
 
-.invoiceHeader {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 5rem;
-}
+  .invoiceHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5rem;
+  }
 
-.title {
-font-size: 1.5rem;
-font-weight: bold;
-}
+  .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+  }
 
-.invoiceMain {
-flex-grow: 1;
-}
+  .invoiceMain {
+      flex-grow: 1;
+  }
 
-.invoiceTable {
-text-align: left;
-}
+  .invoiceTable {
+      text-align: left;
+  }
 
-tbody {
-margin-top: 20px;
-}
+  tbody {
+      margin-top: 20px;
+  }
 
 
-.invoiceSummary {
-display: flex;
-flex-direction: column;
-align-items: flex-end;
-margin-top: 20px; /* Adjust the margin as needed */
-}
+  .invoiceSummary {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-top: 20px;
+      /* Adjust the margin as needed */
+  }
 
-.invoiceSummary div {
-display: flex;
-align-items: flex-end;
-gap: 2rem;
-width: 20rem;
-justify-content: flex-end;
-}
-.grandline {
-width: 16rem;
-background: gray;
-height : 1px;
-}
-.gst {
-color: gray;
-}
+  .invoiceSummary div {
+      display: flex;
+      align-items: flex-end;
+      gap: 2rem;
+      width: 20rem;
+      justify-content: flex-end;
+  }
 
-.invoiceFooter {
-margin-top: auto;
-position: relative;
-}
-.validity {
-position: absolute;
-left: 0;
-bottom: 14rem;
-}
-.logo-image {
-width : 200px;
-height : 72px;
-}
-.tnc {
-background: black;
-color: lightgray;
-padding: 1rem 5rem;
-margin: auto;
-text-align: left;
-border-radius: 72px 72px;
-font-size : 15px;
-}
-.line {
-width: 250%;  
-background: gray;
-height : 0.1px;
-}
+  .grandline {
+      width: 16rem;
+      background: gray;
+      height: 1px;
+  }
 
-.tableData{
-font-size: 1.2rem;
-max-width: 200px; /* Adjust the maximum width as needed */
-overflow: hidden;
-text-overflow: ellipsis;
-white-space: nowrap;
-word-wrap: break-word; /* Add this line */
-margin : 10px;
-padding : 10px;
-}
+  .gst {
+      color: gray;
+  }
 
-.rateCol{
-min-width : 100px;
-}
+  .invoiceFooter {
+      margin-top: auto;
+      position: relative;
+  }
+
+  .validity {
+      /* position: absolute;
+      left: 0;
+      bottom: 14rem; */
+  }
+
+  .logo-image {
+      width: 200px;
+      height: 72px;
+  }
+
+  .tnc {
+      background: black;
+      color: lightgray;
+      height: 5rem;
+      width: 50rem;
+      padding: 0.7rem 0 0 2rem;
+      position: relative;
+      top: 2rem;
+      left: 12rem;
+      border-radius: 4.5rem 4.5rem;
+      font-size: 1rem;
+  }
+
+  .line {
+      width: 250%;
+      background: gray;
+      height: 0.1px;
+  }
+
+  .tableData {
+      font-size: 1.2rem;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-wrap: break-word;
+      margin: 10px;
+      padding: 10px;
+  }
+
+  .rateCol {
+      min-width: 100px;
+  }
 </style>
   </head>
   <body>
@@ -215,7 +210,7 @@ min-width : 100px;
             <td colspan="5" class="line"></td>
          </tr>
         </table>
-        <div class="invoiceSummary">
+        <div class="invoiceSummary" align="right">
           <div class="total">
             <div>Total</div>
             <div>INR ${totalAmount}</div>
@@ -226,7 +221,7 @@ min-width : 100px;
           </div>
           <div class="grandline"> </div>
           <div class="grandTotal">
-            <div>Grand Total</div>
+            <div style="float:right;">Grand Total</div>
             <div>INR ${grandTotal}</div>
 
           </div>
@@ -246,18 +241,14 @@ min-width : 100px;
       </footer>
     </div>
   </body>
-</html>
-    
-`
-        // console.log("Create pdf");
-        // console.log(pdfTemplate);
-
+</html>`
         pdf.create(pdfTemplate, {}).toFile('./invoice.pdf', (error) => {
             if (error) {
                 console.log('error');
                 res.status(400);
                 return next(new Error(error.message));
             }
+
             res.send(Promise.resolve())
         });
     } catch (error) {

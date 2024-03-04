@@ -1,5 +1,5 @@
 const express = require("express");
-const { createInvoice, getAllInvoicesByUserId,createPDf,fetchPdf } = require("../controllers/productController");
+const { createInvoice, getAllInvoicesByUserId,createPDf,fetchPdf } = require("../controllers/invoiceController");
 const isAuthenticated = require("../middleware/authMiddleware");
 const router = express.Router();
 
