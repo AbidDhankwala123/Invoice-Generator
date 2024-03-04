@@ -1,28 +1,28 @@
 const mongoose = require("mongoose");
 const User = require("./user");
 
-const productSchema = new mongoose.Schema({
+const invoiceSchema = new mongoose.Schema({
 
-    productOwnerId: {
+    ownerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: User,
         required: true
     },
     products: [
         {
-            productName: {
+            name: {
                 type: String,
                 required: true
             },
-            productQuantity: {
+            quantity: {
                 type: Number,
                 required: true
             },
-            productRate: {
+            rate: {
                 type: Number,
                 required: true
             },
-            productTotal: {
+            total: {
                 type: Number,
                 required: true
             }
@@ -45,6 +45,6 @@ const productSchema = new mongoose.Schema({
 
 });
 
-const Product = mongoose.model("Product", productSchema);
+const Invoice = mongoose.model("Invoice", invoiceSchema);
 
-module.exports = Product
+module.exports = Invoice

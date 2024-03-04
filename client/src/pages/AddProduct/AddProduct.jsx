@@ -12,26 +12,25 @@ const AddProduct = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [grandTotal, setGrandTotal] = useState(0);
 
-    const [errorProductName, setErrorProductName] = useState("");
-    const [errorProductQuantity, setErrorProductQuantity] = useState("");
-    const [errorProductRate, setErrorProductRate] = useState("");
+    const [errorname, setErrorName] = useState("");
+    const [errorquantity, setErrorQuantity] = useState("");
+    const [errorrate, setErrorRate] = useState("");
 
-//ccjscdlbc
-    const productOwnerId = localStorage.getItem("productOwnerId");
+    const ownerId = localStorage.getItem("ownerId");
 
     const [products, setProducts] = useState(
         [
             {
-                productName: "",
-                productQuantity: null,
-                productRate: null,
-                productTotal: 0
+                name: "",
+                quantity: null,
+                rate: null,
+                total: 0
             }
         ]
     )
 
     useEffect(() => {
-        const total = products.reduce((prev, curr) => prev + curr.productTotal, 0)
+        const total = products.reduce((prev, curr) => prev + curr.total, 0)
         setTotalAmount(total);
 
         const gstAmount = total * 0.18; // 18% GST
@@ -40,8 +39,8 @@ const AddProduct = () => {
 
     }, [products])
 
-    const productObject = {
-        productOwnerId,
+    const invoiceObject = {
+        ownerId,
         products,
         totalAmount,
         grandTotal
@@ -51,29 +50,29 @@ const AddProduct = () => {
         setProducts(prevProducts => [
             ...prevProducts,
             {
-                productName: "",
-                productQuantity: null,
-                productRate: null,
-                productTotal: 0
+                name: "",
+                quantity: null,
+                rate: null,
+                total: 0
             }
         ]);
     }
-    const handleProductName = (e, index) => {
+    const handleName = (e, index) => {
         const updatedProducts = [...products];
-        updatedProducts[index].productName = e.target.value;
+        updatedProducts[index].name = e.target.value;
         setProducts(updatedProducts);
     }
-    const handleProductQuantity = (e, index) => {
+    const handleQuantity = (e, index) => {
         const updatedProducts = [...products];
-        updatedProducts[index].productQuantity = e.target.value;
-        updatedProducts[index].productTotal = e.target.value * updatedProducts[index].productRate;
+        updatedProducts[index].quantity = e.target.value;
+        updatedProducts[index].total = e.target.value * updatedProducts[index].rate;
         setProducts(updatedProducts);
     }
 
-    const handleProductRate = (e, index) => {
+    const handleRate = (e, index) => {
         const updatedProducts = [...products];
-        updatedProducts[index].productRate = e.target.value;
-        updatedProducts[index].productTotal = e.target.value * updatedProducts[index].productQuantity;
+        updatedProducts[index].rate = e.target.value;
+        updatedProducts[index].total = e.target.value * updatedProducts[index].quantity;
         setProducts(updatedProducts);
     }
 
@@ -83,31 +82,31 @@ const AddProduct = () => {
         setProducts(updatedProducts);
     };
 
-    const validateProductName = () => {
-        if (products.some(product => !product.productName || product.productName.trim().length === 0)) {
-            setErrorProductName("Product Name is required");
+    const validateName = () => {
+        if (products.some(product => !product.name || product.name.trim().length === 0)) {
+            setErrorName("Product Name is required");
             return true;
         }
-        setErrorProductName("");
+        setErrorName("");
         return false;
     }
-    const validateProductQuantity = () => {
+    const validateQuantity = () => {
         let regex = /^[0-9]+$/;
-        if (products.some(product => !product.productQuantity || !regex.test(product.productQuantity))) {
-            setErrorProductQuantity("Product Quantity must be in numbers");
+        if (products.some(product => !product.quantity || !regex.test(product.quantity))) {
+            setErrorQuantity("Product Quantity must be in numbers");
             return true;
         }
-        setErrorProductQuantity("");
+        setErrorQuantity("");
         return false;
 
     }
-    const validateProductRate = () => {
+    const validateRate = () => {
         let regex = /^[0-9]+$/;
-        if (products.some(product => !product.productRate || !regex.test(product.productRate))) {
-            setErrorProductRate("Product Rate must be in numbers");
+        if (products.some(product => !product.rate || !regex.test(product.rate))) {
+            setErrorrate("Product Rate must be in numbers");
             return true;
         }
-        setErrorProductRate("");
+        setErrorRate("");
         return false;
 
     }
@@ -117,13 +116,13 @@ const AddProduct = () => {
             return
         }
 
-        if (validateProductName() || validateProductQuantity() || validateProductRate()) {
+        if (validateName() || validateQuantity() || validateRate()) {
             return;
         }
 
         setLoading(true);
 
-        axios.post(import.meta.env.VITE_APP_BACKEND_URL_FOR_PRODUCTS, productObject, { headers: { "Content-Type": "application/json", "Authorization": "Bearer " + localStorage.getItem("jwtToken") } })
+        axios.post(import.meta.env.VITE_APP_BACKEND_URL_FOR_PRODUCTS, invoiceObject, { headers: { "Content-Type": "application/json", "Authorization": "Bearer " + localStorage.getItem("jwtToken") } })
             .then(response => {
                 // listProducts();
                 console.log(response);
@@ -170,13 +169,13 @@ const AddProduct = () => {
                                 {products.length > 1 && <p><FaTimes title='Delete Product' className="text-red-600 cursor-pointer text-3xl" onClick={() => handleProductDelete(index)} /></p>}
                             </div><br />
                             <div className='flex gap-4'>
-                                <input type="text" onChange={(e) => handleProductName(e, index)} onBlur={validateProductName} value={products[index].productName} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="productName" placeholder='Product Name' />
-                                <p className='text-red-600'>{errorProductName}</p>
-                                <input type="text" onChange={(e) => handleProductQuantity(e, index)} onBlur={validateProductQuantity} value={products[index].productQuantity !== null ? products[index].productQuantity : ""} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="productQuantity" placeholder='Product Quantity' />
-                                <p className='text-red-600'>{errorProductQuantity}</p>
-                                <input type="text" onChange={(e) => handleProductRate(e, index)} onBlur={validateProductRate} value={products[index].productRate !== null ? products[index].productRate : ""} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="productRate" placeholder='Product Rate' />
-                                <p className='text-red-600'>{errorProductRate}</p>
-                                <span className='text-lg'>Total - {products[index].productTotal}</span>
+                                <input type="text" onChange={(e) => handleName(e, index)} value={products[index].name} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="name" placeholder='Product Name' />
+                                <p className='text-red-600'>{errorname}</p>
+                                <input type="text" onChange={(e) => handleQuantity(e, index)} value={products[index].quantity !== null ? products[index].quantity : ""} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="quantity" placeholder='Product Quantity' />
+                                <p className='text-red-600'>{errorquantity}</p>
+                                <input type="text" onChange={(e) => handleRate(e, index)} value={products[index].rate !== null ? products[index].rate : ""} className='h-10 w-3/12 pl-2.5 border-slate-400 border-solid border-2 rounded' name="rate" placeholder='Product Rate' />
+                                <p className='text-red-600'>{errorrate}</p>
+                                <span className='text-lg'>Total - {products[index].total}</span>
                             </div>
                         </div>
 

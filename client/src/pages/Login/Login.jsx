@@ -62,7 +62,7 @@ const Login = () => {
           autoClose: 1000
         })
         localStorage.setItem("jwtToken", response.data.jwtToken);
-        localStorage.setItem("productOwnerId", response.data.id);
+        localStorage.setItem("ownerId", response.data.id);
         localStorage.setItem("userName", response.data.name);
         setTimeout(() => {
           navigate("/addProduct");
@@ -70,10 +70,12 @@ const Login = () => {
       })
       .catch(error => {
         console.log(error);
-        toast.error(error.response.data.message, {
-          position: "top-center",
-          autoClose: 2000
-        });
+        if (error.response && error.response.data && error.response.data.message) {
+          toast.error(error.response.data.message, {
+            position: "top-center",
+            autoClose: 2000
+          });
+        }
         setLoading(false);
       })
   }
