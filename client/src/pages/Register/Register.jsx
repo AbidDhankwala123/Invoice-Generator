@@ -68,7 +68,7 @@ const Register = () => {
         }
         setLoading(true);
 
-        axios.post(`${import.meta.env.VITE_APP_BACKEND_URL_FOR_AUTH}/register`, registerUserObject, { headers: { "Content-Type": "application/json" } })
+        axios.post(`${import.meta.env.VITE_APP_BACKEND_URL_FOR_AUTH}register`, registerUserObject, { headers: { "Content-Type": "application/json" } })
             .then(response => {
                 toast.success(response.data.message, {
                     position: "top-center",

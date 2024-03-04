@@ -37,6 +37,10 @@ function App() {
             saveAs(pdfBlob, 'invoice.pdf')
 
         })
+        .catch(error => {
+          console.error("Error downloading invoice:", error);
+          // Handle error here
+      });
 
 }
 
